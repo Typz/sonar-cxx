@@ -26,19 +26,19 @@ import org.sonar.plugins.cxx.utils.CxxAbstractRuleRepository;
 /**
  * {@inheritDoc}
  */
-public final class CxxCompilerRuleRepository extends CxxAbstractRuleRepository {
+public final class CxxCompilerVcRuleRepository extends CxxAbstractRuleRepository {
   static final String KEY = "compiler";
 
   /**
    * {@inheritDoc}
    */
-  public CxxCompilerRuleRepository(ServerFileSystem fileSystem, XMLRuleParser xmlRuleParser) {
+  public CxxCompilerVcRuleRepository(ServerFileSystem fileSystem, XMLRuleParser xmlRuleParser) {
     super(fileSystem, xmlRuleParser, KEY);
     setName(KEY);
   }
 
   @Override
   protected String fileName() {
-    return "/compiler.xml";
+    return "/compiler-vc.xml";
   }
 }

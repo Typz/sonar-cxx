@@ -19,28 +19,26 @@
  */
 package org.sonar.plugins.cxx.compiler;
 
-import org.junit.Test;
 import org.sonar.api.platform.ServerFileSystem;
 import org.sonar.api.rules.XMLRuleParser;
+import org.sonar.plugins.cxx.utils.CxxAbstractRuleRepository;
 
-import static org.fest.assertions.Assertions.assertThat;
-import static org.mockito.Mockito.mock;
+/**
+ * {@inheritDoc}
+ */
+public final class CxxCompilerGccRuleRepository extends CxxAbstractRuleRepository {
+  static final String KEY = "compiler-gcc";
 
-public class CxxCompilerRuleRepositoryTest {
-
-  @Test
-  public void createVcRulesTest() {
-    CxxCompilerVcRuleRepository rulerep = new CxxCompilerVcRuleRepository(
-        mock(ServerFileSystem.class),
-        new XMLRuleParser());
-    assertThat(rulerep.createRules()).hasSize(690);
+  /**
+   * {@inheritDoc}
+   */
+  public CxxCompilerGccRuleRepository(ServerFileSystem fileSystem, XMLRuleParser xmlRuleParser) {
+    super(fileSystem, xmlRuleParser, KEY);
+    setName(KEY);
   }
 
-  @Test
-  public void createGccRulesTest() {
-    CxxCompilerGccRuleRepository rulerep = new CxxCompilerGccRuleRepository(
-        mock(ServerFileSystem.class),
-        new XMLRuleParser());
-    assertThat(rulerep.createRules()).hasSize(159);
+  @Override
+  protected String fileName() {
+    return "/compiler-gcc.xml";
   }
 }

@@ -27,6 +27,7 @@ import org.sonar.api.profiles.RulesProfile;
 import org.sonar.api.resources.Project;
 import org.sonar.api.rules.RuleFinder;
 import org.sonar.api.utils.StaxParser;
+import org.sonar.plugins.cxx.CxxMetrics;
 import org.sonar.plugins.cxx.utils.CxxReportSensor;
 import org.sonar.plugins.cxx.utils.CxxUtils;
 import org.sonar.plugins.cxx.utils.EmptyReportException;
@@ -46,7 +47,7 @@ public class CxxVeraxxSensor extends CxxReportSensor {
    * {@inheritDoc}
    */
   public CxxVeraxxSensor(RuleFinder ruleFinder, Settings conf, ModuleFileSystem fs, RulesProfile profile) {
-    super(ruleFinder, conf, fs);
+    super(ruleFinder, conf, fs, CxxMetrics.VERAXX);
     this.profile = profile;
   }
 

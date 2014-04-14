@@ -23,6 +23,8 @@ import org.apache.tools.ant.DirectoryScanner;
 import org.sonar.api.batch.Sensor;
 import org.sonar.api.batch.SensorContext;
 import org.sonar.api.config.Settings;
+import org.sonar.api.measures.Measure;
+import org.sonar.api.measures.Metric;
 import org.sonar.api.resources.Project;
 import org.sonar.api.rules.Rule;
 import org.sonar.api.rules.RuleFinder;
@@ -46,7 +48,10 @@ public abstract class CxxReportSensor implements Sensor {
   protected Settings conf;
   private HashSet<String> uniqueFileName = new HashSet<String>();
   protected ModuleFileSystem fs;
-  
+
+  private final Metric metric;
+  private int violationsCount;
+
   /**
    * {@inheritDoc}
    */
@@ -61,6 +66,17 @@ public abstract class CxxReportSensor implements Sensor {
     this.ruleFinder = ruleFinder;
     this.conf = conf;
     this.fs = fs;
+    this.metric = null;
+  }
+
+  /**
+   * {@inheritDoc}
+   */
+  public CxxReportSensor(RuleFinder ruleFinder, Settings conf, ModuleFileSystem fs, Metric metric) {
+    this.ruleFinder = ruleFinder;
+    this.conf = conf;
+    this.fs = fs;
+    this.metric = metric;
   }
 
   /**
@@ -77,6 +93,9 @@ public abstract class CxxReportSensor implements Sensor {
     try {
       List<File> reports = getReports(conf, fs.baseDir().getPath(),
           reportPathKey(), defaultReportPath());
+
+      violationsCount = 0;
+
       for (File report : reports) {
         CxxUtils.LOG.info("Processing report '{}'", report);
         try{
@@ -89,6 +108,12 @@ public abstract class CxxReportSensor implements Sensor {
 
       if (reports.isEmpty()) {
         handleNoReportsCase(context);
+      }
+
+      if (metric != null) {
+        Measure measure = new Measure(metric);
+        measure.setIntValue(violationsCount);
+        context.saveMeasure(measure);
       }
     } catch (Exception e) {
       String msg = new StringBuilder()
@@ -184,6 +209,7 @@ public abstract class CxxReportSensor implements Sensor {
       if (violation != null){
         violation.setMessage(msg);
         context.saveViolation(violation);
+        violationsCount++;
       }
     } else {
       CxxUtils.LOG.warn("Cannot find the rule {}, skipping violation", ruleId);

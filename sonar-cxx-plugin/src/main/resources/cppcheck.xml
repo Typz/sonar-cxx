@@ -59,22 +59,6 @@
     </description>
   </rule>
   <rule>
-    <key>returnAutocstr</key>
-    <configkey>returnAutocstr</configkey>
-    <name>Returning pointer to auto variable</name>
-    <description>
-      Returning pointer to auto variable.
-    </description>
-  </rule>
-  <rule>
-    <key>returnTempPointer</key>
-    <configkey>returnTempPointer</configkey>
-    <name>Returning pointer to temporary</name>
-    <description>
-      Returning pointer to temporary.
-    </description>
-  </rule>
-  <rule>
     <key>autovarInvalidDeallocation</key>
     <configkey>autovarInvalidDeallocation</configkey>
     <name>Deallocating auto-variable is invalid</name>
@@ -341,16 +325,6 @@
     </description>
   </rule>
   <rule>
-    <key>nonreentrantFunctionsasctime</key>
-    <configkey>nonreentrantFunctionsasctime</configkey>
-    <name>Avoid usage of the function 'asctime'</name>
-    <description>
-      The function 'asctime' is not reentrant. For thread-safe
-      applications it is recommended to use the reentrant replacement
-      function 'asctime_r'.
-    </description>
-  </rule>
-  <rule>
     <key>nonreentrantFunctionscrypt</key>
     <configkey>nonreentrantFunctionscrypt</configkey>
     <name>Avoid usage of the function 'crypt'</name>
@@ -368,16 +342,6 @@
       The function 'ctermid' is not reentrant. For thread-safe
       applications it is recommended to use the reentrant replacement
       function 'ctermid_r'.
-    </description>
-  </rule>
-  <rule>
-    <key>nonreentrantFunctionsctime</key>
-    <configkey>nonreentrantFunctionsctime</configkey>
-    <name>Avoid usage of the function 'ctime'</name>
-    <description>
-      The function 'ctime' is not reentrant. For threadsafe
-      applications it is recommended to use the reentrant replacement
-      function 'ctime_r'.
     </description>
   </rule>
   <rule>
@@ -691,16 +655,6 @@
     </description>
   </rule>
   <rule>
-    <key>nonreentrantFunctionsrand</key>
-    <configkey>nonreentrantFunctionsrand</configkey>
-    <name>Avoid usage of the function 'rand'</name>
-    <description>
-      The function 'rand' is not reentrant. For thread-safe
-      applications it is recommended to use the reentrant replacement
-      function 'rand_r'.
-    </description>
-  </rule>
-  <rule>
     <key>nonreentrantFunctionsreaddir</key>
     <configkey>nonreentrantFunctionsreaddir</configkey>
     <name>Avoid usage of the function 'readdir'</name>
@@ -728,16 +682,6 @@
       The function 'tempnam' is not reentrant. For thread-safe
       applications it is recommended to use the reentrant replacement
       function 'tempnam_r'.
-    </description>
-  </rule>
-  <rule>
-    <key>nonreentrantFunctionstmpnam</key>
-    <configkey>nonreentrantFunctionstmpnam</configkey>
-    <name>Avoid usage of the function 'tmpnam'</name>
-    <description>
-      The function 'tmpnam' is not reentrant. For thread-safe
-      applications it is recommended to use the reentrant replacement
-      function 'tmpnam_r'.
     </description>
   </rule>
   <rule>
@@ -1255,17 +1199,6 @@
     </description>
   </rule>
   <rule>
-    <key>conditionAlwaysTrueFalse</key>
-    <configkey>conditionAlwaysTrueFalse</configkey>
-    <name>Condition is always true/false</name>
-    <description>
-      The condition evaluates always to true/false.
-    </description>
-  </rule>
-
-  <error id="conditionAlwaysTrueFalse" severity="style" msg="Condition is always true/false"/>
-
-  <rule>
     <key>duplicateIf</key>
     <configkey>duplicateIf</configkey>
     <name>Redundant 'if'-expressions</name>
@@ -1353,16 +1286,6 @@
     <name>When i==foo.size(), foo[i] is out of bounds</name>
     <description>
       When i==foo.size(), foo[i] is out of bounds.
-    </description>
-  </rule>
-  <rule>
-    <key>erase</key>
-    <configkey>erase</configkey>
-    <name>Dangerous iterator usage after erase()-method</name>
-    <description>
-      Dangerous iterator usage after erase()-method. After erase the
-      iterator is invalid so dereferencing it or comparing it with another
-      iterator is invalid.
     </description>
   </rule>
   <rule>
@@ -1657,14 +1580,6 @@
       Return the address of a function parameter.
     </description>
   </rule>
-  <rule>
-    <key>secondAlwaysTrueFalseWhenFirstTrue</key>
-    <configkey>secondAlwaysTrueFalseWhenFirstTrue</configkey>
-    <name>Redundant condition</name>
-    <description>
-      When first comparison is true, the second comparison is always true.
-    </description>
-  </rule>
 
   <!-- ########### New in cppcheck 1.52 ########### -->
   <rule>
@@ -1723,14 +1638,6 @@
     <name>Suspicious comparison of boolean with a string literal</name>
     <description>
       A boolean comparison with the string literal is always true.
-    </description>
-  </rule>
-  <rule>
-    <key>redundantStrcpyInSwitch</key>
-    <configkey>redundantStrcpyInSwitch</configkey>
-    <name>Redundant strcpy in switch</name>
-    <description>
-      Switch case fall-through. Redundant strcpy of a variable.
     </description>
   </rule>
   <rule>
@@ -1794,14 +1701,6 @@
   </rule>
 
   <!-- ########### New in cppcheck 1.53 ########### -->
-  <rule>
-    <key>debug</key>
-    <configkey>debug</configkey>
-    <name>Debug</name>
-    <description>
-      Any kind of debug message
-    </description>
-  </rule>
   <rule>
     <key>doubleCloseDir</key>
     <configkey>doubleCloseDir</configkey>
@@ -1876,30 +1775,12 @@
     </description>
   </rule>
   <rule>
-    <key>obsoleteFunctionsasctime</key>
-    <configkey>obsoleteFunctionsasctime</configkey>
-    <name>Avoid usage of the function 'asctime'</name>
-    <description>
-      The function 'asctime' is obsolete. It is recommended to use the
-      function 'strftime' instead.
-    </description>
-  </rule>
-  <rule>
     <key>obsoleteFunctionsasctime_r</key>
     <configkey>obsoleteFunctionsasctime_r</configkey>
     <name>Avoid usage of the function 'asctime_r'</name>
     <description>
       The function 'asctime_r' is obsolete. It is recommended to use
       the function 'strftime' instead.
-    </description>
-  </rule>
-  <rule>
-    <key>obsoleteFunctionsctime</key>
-    <configkey>obsoleteFunctionsctime</configkey>
-    <name>Avoid usage of the function 'ctime'</name>
-    <description>
-      The function 'ctime' is obsolete. It is recommended to use the
-      function 'strftime' instead.
     </description>
   </rule>
   <rule>
@@ -2075,14 +1956,6 @@
     </description>
   </rule>
   <rule>
-    <key>missingScanfFormatWidth</key>
-    <configkey>missingScanfFormatWidth</configkey>
-    <name>wrong width for scanf parameter</name>
-    <description>
-      Width 'parameter' given in format string (no. 'symbol' ) doesn't match destination buffer.
-    </description>
-  </rule>
-  <rule>
     <key>moduloAlwaysTrueFalse</key>
     <configkey>moduloAlwaysTrueFalse</configkey>
     <name>Comparison of modulo result is predetermined</name>
@@ -2227,14 +2100,6 @@
     <name>Use const reference for 'varname' to avoid unnecessary data copying</name>
     <description>
       Use const reference for 'varname' to avoid unnecessary data copying.
-    </description>
-  </rule>
-  <rule>
-    <key>redundantOperationInSwitch</key>
-    <configkey>redundantOperationInSwitch</configkey>
-    <name>Redundant operation on 'varname' in switch</name>
-    <description>
-      Redundant operation on 'varname' in switch.
     </description>
   </rule>
   <rule>
@@ -2693,4 +2558,102 @@
       Either the condition is useless or there is division by zero.
     </description>
   </rule>
+
+  <!-- ########### New in cppcheck 1.63 ########### -->
+  <rule>
+    <key>assertWithSideEffect</key>
+    <configkey>assertWithSideEffect</configkey>
+    <name>Assert with side effect</name>
+    <description>
+      Assert statement calls a function which may have desired side effects.
+    </description>
+  </rule>
+  <rule>
+    <key>pointerArithBool</key>
+    <configkey>pointerArithBool</configkey>
+    <name>Pointer arithmetic conversion</name>
+    <description>
+      Converting pointer arithmetic result to bool. The bool is always true unless there is undefined behaviour.
+    </description>
+  </rule>
+  <rule>
+    <key>leakReturnValNotUsed</key>
+    <configkey>leakReturnValNotUsed</configkey>
+    <name>Leak return value</name>
+    <description>
+      Return value of allocation function is not used.
+    </description>
+  </rule>
+  <rule>
+    <key>invalidFunctionArg</key>
+    <configkey>invalidFunctionArg</configkey>
+    <name>Invalid function argument</name>
+    <description>
+      A function gets passed an invalid argument.
+    </description>
+  </rule>
+  <rule>
+    <key>invalidFunctionArgBool</key>
+    <configkey>invalidFunctionArgBool</configkey>
+    <name>Invalid function bool argument</name>
+    <description>
+      A function gets passed an invalid argument. A non-boolean value is required.
+    </description>
+  </rule>
+
+  <!-- ########### New in cppcheck 1.64 ########### -->
+  <rule>
+    <key>negativeMemoryAllocationSize</key>
+    <configkey>negativeMemoryAllocationSize</configkey>
+    <name>Memory allocation is negative</name>
+    <description>
+      Memory allocation size have to be greater or equal to 0.
+    </description>
+  </rule>
+  <rule>
+    <key>memsetFloat</key>
+    <configkey>memsetFloat</configkey>
+    <name>Memset Float</name>
+    <description>
+      The 2nd memset() argument is a float, its representation is implementation defined.
+    </description>
+  </rule>
+  <rule>
+    <key>memsetValueOutOfRange</key>
+    <configkey>memsetValueOutOfRange</configkey>
+    <name>Memset value out of range</name>
+    <description>
+      The 2nd memset() argument doesn't fit into an 'unsigned char'.
+    </description>
+  </rule>
 </rules>
+
+
+<!-- ########### Deprecated as of 1.63 ########### -->
+<!-- tooBigSleepTime -->
+<!-- dangerousUsageStrtol -->
+<!-- wrongcctypecall -->
+
+<!-- ########### Deprecated as of 1.63.1 ########### -->
+<!-- dangerousUsageStrtol -->
+<!-- conditionAlwaysTrueFalse -->
+<!-- sizeArgumentAsChar -->
+<!-- complexPatternError -->
+<!-- missingPercentCharacter -->
+<!-- redundantStrcpyInSwitch -->
+<!-- stlcstrthrow -->
+<!-- wrongcctypecall -->
+<!-- debug -->
+<!-- strncatUsage -->
+<!-- invalidScanfFormatWidth -->
+<!-- leakconfiguration -->
+<!-- missingScanfFormatWidth -->
+<!-- redundantOperationInSwitch -->
+<!-- unknownPattern -->
+<!-- invalidFree -->
+<!-- invalidLengthModifierError -->
+<!-- tooBigSleepTime -->
+<!-- class_X_Y -->
+
+<!-- ########### Deprecated as of 1.64 ########### -->
+<!-- duplicateBranch -->

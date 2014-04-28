@@ -33,7 +33,6 @@ import org.sonar.api.rules.Violation;
 import org.sonar.api.utils.SonarException;
 import org.sonar.plugins.cxx.CxxLanguage;
 import org.sonar.api.scan.filesystem.ModuleFileSystem;
-import org.sonar.plugins.cxx.CxxPlugin;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -46,7 +45,7 @@ import java.util.List;
 public abstract class CxxReportSensor implements Sensor {
   private RuleFinder ruleFinder;
   protected Settings conf;
-  private HashSet<String> uniqueFileName = new HashSet<String>();
+  private HashSet<String> notFoundFiles = new HashSet<String>();
   private HashSet<String> uniqueIssues = new HashSet<String>();
   protected ModuleFileSystem fs;
 
@@ -168,16 +167,16 @@ public abstract class CxxReportSensor implements Sensor {
   /**
    * Saves code violation only if unique.
    * Compares file, line, ruleId and msg.
-   */  
+   */
   public boolean saveUniqueViolation(Project project, SensorContext context, String ruleRepoKey,
                                         String file, String line, String ruleId, String msg) {
-  
+
     if (uniqueIssues.add(file + line + ruleId + msg)) {
       return saveViolation(project, context, ruleRepoKey, file, line, ruleId, msg);
     }
     return false;
   }
-  
+
   /**
    * Saves a code violation which is detected in the given file/line
    * and has given ruleId and message. Saves it to the given project and context.
@@ -186,7 +185,6 @@ public abstract class CxxReportSensor implements Sensor {
    */
   public boolean saveViolation(Project project, SensorContext context, String ruleRepoKey,
                                String file, String line, String ruleId, String msg) {
-    
     boolean added = false;
     RuleQuery ruleQuery = RuleQuery.create()
       .withRepositoryKey(ruleRepoKey)
@@ -196,25 +194,29 @@ public abstract class CxxReportSensor implements Sensor {
       Violation violation = null;
       // handles file="" situation
       if ((file != null) && (file.length() > 0)){
-        org.sonar.api.resources.File resource =
-          org.sonar.api.resources.File.fromIOFile(new File(file), project);
-        if (context.getResource(resource) != null) {
-          // file level violation
-          violation = Violation.create(rule, resource);
+        String normalPath = CxxUtils.normalizePath(file);
+        if(normalPath != null){
+          org.sonar.api.resources.File resource =
+            org.sonar.api.resources.File.fromIOFile(new File(normalPath), project);
+          if (context.getResource(resource) != null) {
+            // file level violation
+            violation = Violation.create(rule, resource);
 
-          // considering the line information for file level violations only
-          if (line != null){
-            try{
-              int linenr = Integer.parseInt(line);
-              linenr = linenr == 0 ? 1 : linenr;
-              violation.setLineId(linenr);
-            } catch(java.lang.NumberFormatException nfe){
-              CxxUtils.LOG.warn("Skipping invalid line number: {}", line);
+            // considering the line information for file level violations only
+            if (line != null){
+              try{
+                int linenr = Integer.parseInt(line);
+                linenr = linenr == 0 ? 1 : linenr;
+                violation.setLineId(linenr);
+              } catch(java.lang.NumberFormatException nfe){
+                CxxUtils.LOG.warn("Skipping invalid line number: {}", line);
+              }
             }
-          }
-        } else {
-          if (uniqueFileName.add(file)) {
-          CxxUtils.LOG.warn("Cannot find the file '{}', skipping violations", file);
+          } else {
+            if (notFoundFiles.add(normalPath)) {
+              // issue this warning only once per file
+              CxxUtils.LOG.warn("Cannot find the file '{}', skipping violations", normalPath);
+            }
           }
         }
       } else {
@@ -230,10 +232,10 @@ public abstract class CxxReportSensor implements Sensor {
       }
     } else {
       CxxUtils.LOG.warn("Cannot find the rule {}, skipping violation", ruleId);
-    }    
+    }
     return added;
   }
-  
+
   protected void processReport(Project project, SensorContext context, File report)
       throws Exception
   {

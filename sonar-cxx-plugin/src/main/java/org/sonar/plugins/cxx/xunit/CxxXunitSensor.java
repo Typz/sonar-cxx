@@ -193,12 +193,11 @@ public class CxxXunitSensor extends CxxReportSensor {
   }
   
   private org.sonar.api.resources.File getTestFile(Project project, SensorContext context, String fileKey) {
-
-    org.sonar.api.resources.File resource =
-      org.sonar.api.resources.File.fromIOFile(new File(fileKey), fs.testDirs());
+    org.sonar.api.resources.File resource = fromIOFile(fileKey, project);
+    
     if (context.getResource(resource) == null) {
       String filePath = lookupFilePath(fileKey);
-      resource = org.sonar.api.resources.File.fromIOFile(new File(filePath), fs.testDirs());
+      resource = fromIOFile(filePath, project);
       if (context.getResource(resource) == null) {
         CxxUtils.LOG.debug("Cannot find the source file for test '{}', creating a dummy one", fileKey);
         resource = createVirtualFile(context, fileKey);        
@@ -209,6 +208,18 @@ public class CxxXunitSensor extends CxxReportSensor {
     
     return resource;
   }
+
+
+  org.sonar.api.resources.File fromIOFile(String filepath, Project project){
+    File file = new File(filepath);
+    org.sonar.api.resources.File resource = org.sonar.api.resources.File.fromIOFile(file, project);
+    if (resource == null) {
+      // support SQ<4.2
+      resource = org.sonar.api.resources.File.fromIOFile(file, fs.testDirs());
+    }
+    return resource;
+  }
+
 
   private org.sonar.api.resources.File createVirtualFile(SensorContext context, String fileKey) {
     org.sonar.api.resources.File file = new org.sonar.api.resources.File(fileKey);
@@ -237,6 +248,7 @@ public class CxxXunitSensor extends CxxReportSensor {
       cxxConf.setDefines(Arrays.asList(lines));
     }
     cxxConf.setIncludeDirectories(conf.getStringArray(CxxPlugin.INCLUDE_DIRECTORIES_KEY));
+    cxxConf.setIncludeDirectories(conf.getStringArray(CxxPlugin.FORCE_INCLUDE_FILES_KEY));
     
     for (File file : files) {
       @SuppressWarnings("unchecked")

@@ -29,7 +29,7 @@ import org.sonar.plugins.cxx.utils.CxxUtils;
  * {@inheritDoc}
  */
 public class CxxCompilerVcParser implements CompilerParser {
-  public static final String KEY = "vc";
+  public static final String KEY = "Visual C++";
   // search for single line with compiler warning message - order for groups: 1 = file, 2 = line, 3 = ID, 4=message
   public static final String DEFAULT_REGEX_DEF = "^.*[\\\\,/](.*)\\(([0-9]+)\\)\\x20:\\x20warning\\x20(C\\d\\d\\d\\d):(.*)$";
   // ToDo: as long as java 7 API is not used the support of named groups for regular expression is not possible
@@ -89,5 +89,10 @@ public class CxxCompilerVcParser implements CompilerParser {
       warnings.add(new Warning(filename, line, id, msg));
     }
     scanner.close();
+  }
+  
+  @Override
+  public String toString() {
+    return getClass().getSimpleName();
   }
 }

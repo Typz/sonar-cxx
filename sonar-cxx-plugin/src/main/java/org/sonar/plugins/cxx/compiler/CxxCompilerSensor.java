@@ -118,7 +118,6 @@ public class CxxCompilerSensor extends CxxReportSensor {
   protected void processReport(final Project project, final SensorContext context, File report)
       throws javax.xml.stream.XMLStreamException
   {
-    int countViolations = 0;
     final CompilerParser parser = getCompilerParser();
     final String reportCharset = getParserStringProperty(REPORT_CHARSET_DEF, parser.defaultCharset());
     final String reportRegEx = getParserStringProperty(REPORT_REGEX_DEF, parser.defaultRegexp());
@@ -131,14 +130,11 @@ public class CxxCompilerSensor extends CxxReportSensor {
       for(CompilerParser.Warning w : warnings) {
         // get filename from file system - e.g. VC writes case insensitive file name to html
         if (isInputValid(w.filename, w.line, w.id, w.msg)) {
-          if (saveUniqueViolation(project, context, parser.rulesRepositoryKey(), w.filename, w.line, w.id, w.msg)) {
-            countViolations++;
-          }
+          saveUniqueViolation(project, context, parser.rulesRepositoryKey(), w.filename, w.line, w.id, w.msg);
         } else {
           CxxUtils.LOG.warn("C-Compiler warning: {}", w.msg);
         }
       }
-      CxxUtils.LOG.info("C-Compiler warnings processed = " + countViolations);
     } catch (java.io.FileNotFoundException e) {
       CxxUtils.LOG.error("processReport Exception: " + "report.getName" + " - not processed '{}'", e.toString());
     } catch (java.lang.IllegalArgumentException e1) {

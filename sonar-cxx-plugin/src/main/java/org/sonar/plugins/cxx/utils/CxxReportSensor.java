@@ -102,7 +102,10 @@ public abstract class CxxReportSensor implements Sensor {
       for (File report : reports) {
         CxxUtils.LOG.info("Processing report '{}'", report);
         try{
+          int prevViolationsCount = violationsCount;
           processReport(project, context, report);
+          CxxUtils.LOG.info("{} processed = {}", metric == null ? "Issues" : metric.getName(),
+                            violationsCount - prevViolationsCount);
         }
         catch(EmptyReportException e){
           CxxUtils.LOG.warn("The report '{}' seems to be empty, ignoring.", report);

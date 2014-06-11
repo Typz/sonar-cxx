@@ -15,8 +15,13 @@ class TooManyStatementsPerLine {
         TEST(a,b) // OK
         if (a) {  } TEST(a,b) // NOK
     label: while (condition) { // OK
-        break; // OK
-    }
-           int a = 0; a++; // NOK
+            break; // OK
+        }
+        int a = 0; a++; // NOK
+        switch(x) {
+        case 0: x++; break; //OK
+        case 1:
+            x++; break;     //NOK
+        }
     }
 };

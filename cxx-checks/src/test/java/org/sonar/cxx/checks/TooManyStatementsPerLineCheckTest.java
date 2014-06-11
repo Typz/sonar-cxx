@@ -38,6 +38,7 @@ public class TooManyStatementsPerLineCheckTest {
         .next().atLine(13)
         .next().atLine(16)
         .next().atLine(20)
+        .next().atLine(24)
         .noMore();
   }
 

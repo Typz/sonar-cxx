@@ -1074,14 +1074,21 @@ public enum CxxGrammarImpl implements GrammarRuleKey {
       );
     
     b.rule(initializerClause).is(
-      b.firstOf(
-        assignmentExpression,
-        bracedInitList
+      b.sequence(
+        // EXTENSION: C99 designated initializers
+        b.optional(b.firstOf(b.sequence(".", IDENTIFIER, "="),
+                             // EXTENSION: gcc's designated initializers range
+                             b.sequence("[", constantExpression, "...", constantExpression, "]", "="),
+                             b.sequence("[", constantExpression, "]", "="))),
+        b.firstOf(
+          assignmentExpression,
+          bracedInitList
+          )
         )
       );
     
     b.rule(initializerList).is(initializerClause, b.optional("..."), b.zeroOrMore(",", initializerClause, b.optional("...")));
-    
+
     b.rule(bracedInitList).is("{", b.optional(initializerList), b.optional(","), "}");
   }
   

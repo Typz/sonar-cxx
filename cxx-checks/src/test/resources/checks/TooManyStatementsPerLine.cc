@@ -19,7 +19,7 @@ class TooManyStatementsPerLine {
         }
         int a = 0; a++; // NOK
         switch(x) {
-        case 0: x++; break; //OK
+        case 0: x++; break; //(N)OK, depending on parameters
         case 1:
             x++; break;     //NOK
         }

@@ -24,6 +24,7 @@ import com.sonar.sslr.api.Grammar;
 import com.sonar.sslr.squid.checks.AbstractOneStatementPerLineCheck;
 import org.sonar.check.Priority;
 import org.sonar.check.Rule;
+import org.sonar.check.RuleProperty;
 import org.sonar.cxx.api.CxxKeyword;
 import org.sonar.cxx.parser.CxxGrammarImpl;
 
@@ -33,6 +34,13 @@ import org.sonar.cxx.parser.CxxGrammarImpl;
   priority = Priority.MAJOR)
 
 public class TooManyStatementsPerLineCheck extends AbstractOneStatementPerLineCheck<Grammar> {
+
+  private static final boolean DEFAULT_EXCLUDE_CASE_BREAK = false;
+
+  @RuleProperty(
+      key = "excludeCaseBreak",
+      defaultValue = "" + DEFAULT_EXCLUDE_CASE_BREAK)
+  public boolean excludeCaseBreak = DEFAULT_EXCLUDE_CASE_BREAK;
 
   @Override
   public com.sonar.sslr.api.Rule getStatementRule() {
@@ -60,7 +68,7 @@ public class TooManyStatementsPerLineCheck extends AbstractOneStatementPerLineCh
    */
   private boolean isBreakStatementExcluded(AstNode astNode)
   {
-    if (astNode.getToken().getType() != CxxKeyword.BREAK)
+    if (!excludeCaseBreak || astNode.getToken().getType() != CxxKeyword.BREAK)
       return false;
 
     AstNode switchGroup = astNode.getFirstAncestor(CxxGrammarImpl.switchBlockStatementGroup);

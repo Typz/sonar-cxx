@@ -396,7 +396,7 @@ public class CxxPreprocessor extends Preprocessor {
         try {
           LOG.trace("[{}:{}]: handling #elif line '{}'",
                     new Object[] {filename, token.getLine(), token.getValue()});
-          
+
           // *this* preprocessor instance is used for evaluation, too.
           // It *must not* be in skipping mode while evaluating expressions.
           state.skipping = false;
@@ -408,7 +408,7 @@ public class CxxPreprocessor extends Preprocessor {
           LOG.error(e.toString());
           state.skipping = false;
         }
-        
+
         if (state.skipping) {
           LOG.trace("[{}:{}]: '{}' evaluated to false, skipping tokens that follow",
                     new Object[] {filename, token.getLine(), token.getValue()});
@@ -439,17 +439,18 @@ public class CxxPreprocessor extends Preprocessor {
     AstNode includeAst = pplineParser.parse(includeLine);
     handleIncludeLine(includeAst, includeAst.getToken(), "");
   }
-    
+
   PreprocessorAction handleIncludeLine(AstNode ast, Token token, String filename) {
     //
     // Included files have to be scanned with the (only) goal of gathering macros.
     // This is done as follows:
-    //    
+    //
     // a) pipe the body of the include directive through a lexer to properly expand
     //    all macros which may be in there.
     // b) extract the filename out of the include body and try to find it
     // c) if not done yet, process it using a special lexer, which calls back only
     //    if it finds relevant preprocessor directives (currently: include's and define's)
+
     File includedFile = findIncludedFile(ast, token, filename);
 
     File currentFile = this.getFileUnderAnalysis();
@@ -467,10 +468,10 @@ public class CxxPreprocessor extends Preprocessor {
       analysedFiles.add(includedFile.getAbsoluteFile());
       LOG.debug("[{}:{}]: processing {}, resolved to file '{}'",
                 new Object[] {filename, token.getLine(), token.getValue(), includedFile.getAbsolutePath()});
-      
+
       stateStack.push(state);
       state = new State(includedFile);
-      
+
       try {
         IncludeLexer.create(this).lex(codeProvider.getSourceCode(includedFile));
       } finally {
@@ -480,7 +481,7 @@ public class CxxPreprocessor extends Preprocessor {
     else {
       LOG.debug("[{}:{}]: skipping already included file '{}'", new Object[] {filename, token.getLine(), includedFile});
     }
-    
+
     return new PreprocessorAction(1, Lists.newArrayList(Trivia.createSkippedText(token)), new ArrayList<Token>());
   }
 
@@ -861,7 +862,7 @@ public class CxxPreprocessor extends Preprocessor {
         sb.append(value);
         node = node.getNextSibling();
       }
-      
+
       includedFileName = sb.toString();
     } else if((node = ast.getFirstDescendant(CppGrammar.includeBodyFreeform)) != null) {
       // expand and recurse
@@ -882,10 +883,10 @@ public class CxxPreprocessor extends Preprocessor {
                  new Object[] {currFileName, token.getLine(), expandedIncludeBody});
         return null;
       }
-      
+
       return findIncludedFile(includeBodyAst, token, currFileName);
     }
-    
+
     if (includedFileName != null) {
       File file = getFileUnderAnalysis();
       String dir = file == null ? "" : file.getParent();

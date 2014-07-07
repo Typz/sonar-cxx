@@ -46,6 +46,7 @@ Point p = { .y = 45, .x = 72 };
 int a[6] = { [4] = 29, [2] = 15 };
 int widths[200] = { [0 ... 9] = 1, [10 ... 99] = 2, [100] = 3 };
 
+// C-COMPATIBILITY: C99 compound literals
 void compoundLiteral()
 {
   struct foo {int a; char b[2];} structure;

@@ -514,7 +514,7 @@ public enum CxxGrammarImpl implements GrammarRuleKey {
 
     b.rule(castExpression).is(
       b.firstOf(
-        // EXTENSION: C99 compound literals
+        // C-COMPATIBILITY: C99 compound literals
         b.sequence("(", typeId, ")", bracedInitList ),
         b.sequence(
           b.next("(", typeId, ")"), "(", typeId, ")", castExpression),

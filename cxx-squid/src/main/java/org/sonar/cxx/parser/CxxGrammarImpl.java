@@ -1077,7 +1077,7 @@ public enum CxxGrammarImpl implements GrammarRuleKey {
 
     b.rule(initializerClause).is(
       b.sequence(
-        // EXTENSION: C99 designated initializers
+        // C-COMPATIBILITY: C99 designated initializers
         b.optional(b.firstOf(b.sequence(".", IDENTIFIER, "="),
                              // EXTENSION: gcc's designated initializers range
                              b.sequence("[", constantExpression, "...", constantExpression, "]", "="),

@@ -22,6 +22,7 @@ package org.sonar.cxx.preprocessor;
 import com.google.common.collect.Multimap;
 import com.google.common.collect.HashMultimap;
 import com.google.common.collect.Lists;
+import com.google.common.collect.Multimap;
 import com.sonar.sslr.api.AstNode;
 import com.sonar.sslr.api.Preprocessor;
 import com.sonar.sslr.api.PreprocessorAction;
@@ -215,7 +216,7 @@ public class CxxPreprocessor extends Preprocessor {
       for (String include : conf.getForceIncludeFiles()) {
         LOG.debug("parsing force include: '{}'", include);
         if (!include.equals("")) {
-          parseIncludeLine("#include \"" + include + "\"");
+          parseIncludeLine("#include \"" + include + "\"", "sonar.cxx.forceIncludes");
         }
       }
     } finally {
@@ -223,13 +224,11 @@ public class CxxPreprocessor extends Preprocessor {
     }
   }
 
-  public Collection<String> getIncludedFiles(File file)
-  {
+  public Collection<String> getIncludedFiles(File file) {
     return includedFiles.get(file.getPath());
   }
-
-  public Collection<MissingInclude> getMissingIncludeFiles(File file)
-  {
+  
+  public Collection<MissingInclude> getMissingIncludeFiles(File file) {
     return missingIncludeFiles.get(file.getPath());
   }
 
@@ -435,9 +434,9 @@ public class CxxPreprocessor extends Preprocessor {
     return new PreprocessorAction(1, Lists.newArrayList(Trivia.createSkippedText(token)), new ArrayList<Token>());
   }
 
-  private void parseIncludeLine(String includeLine) {
+  private void parseIncludeLine(String includeLine, String filename) {
     AstNode includeAst = pplineParser.parse(includeLine);
-    handleIncludeLine(includeAst, includeAst.getToken(), "");
+    handleIncludeLine(includeAst, includeAst.getFirstDescendant(CppGrammar.includeBodyQuoted).getToken(), filename);
   }
 
   PreprocessorAction handleIncludeLine(AstNode ast, Token token, String filename) {

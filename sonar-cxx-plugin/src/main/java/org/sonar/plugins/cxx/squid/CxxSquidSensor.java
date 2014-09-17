@@ -117,7 +117,6 @@ public final class CxxSquidSensor implements Sensor {
 
   private void save(Collection<SourceCode> squidSourceFiles) {
     int violationsCount = 0;
-
     DependencyAnalyzer dependencyAnalyzer = new DependencyAnalyzer(project, context, annotationCheckFactory);
     for (SourceCode squidSourceFile : squidSourceFiles) {
       SourceFile squidFile = (SourceFile) squidSourceFile;
@@ -132,11 +131,10 @@ public final class CxxSquidSensor implements Sensor {
       dependencyAnalyzer.addFile(sonarFile, CxxParser.getIncludedFiles(ioFile));
     }
 
-    dependencyAnalyzer.save();
-
     Measure measure = new Measure(CxxMetrics.SQUID);
     measure.setIntValue(violationsCount);
     context.saveMeasure(measure);
+    dependencyAnalyzer.save();
   }
 
   private void saveMeasures(org.sonar.api.resources.File sonarFile, SourceFile squidFile) {

@@ -41,6 +41,7 @@ import org.sonar.cxx.lexer.CxxLexer;
 import java.io.File;
 import java.util.*;
 
+import static org.apache.commons.io.FilenameUtils.wildcardMatchOnSystem;
 import static com.sonar.sslr.api.GenericTokenType.EOF;
 import static com.sonar.sslr.api.GenericTokenType.IDENTIFIER;
 import static org.sonar.cxx.api.CppKeyword.IFDEF;
@@ -114,6 +115,7 @@ public class CxxPreprocessor extends Preprocessor {
   private SourceCodeProvider codeProvider = new SourceCodeProvider();
   private SquidAstVisitorContext<Grammar> context;
   private ExpressionEvaluator ifExprEvaluator;
+  private List<String> cFilesPatterns;
 
   public static class Include {
     private int line;
@@ -191,6 +193,7 @@ public class CxxPreprocessor extends Preprocessor {
     SourceCodeProvider sourceCodeProvider) {
     this.context = context;
     this.ifExprEvaluator = new ExpressionEvaluator(conf, this);
+    this.cFilesPatterns = conf.getCFilesPatterns();
 
     codeProvider = sourceCodeProvider;
     codeProvider.setIncludeRoots(conf.getIncludeDirectories(), conf.getBaseDir());
@@ -235,6 +238,15 @@ public class CxxPreprocessor extends Preprocessor {
     return missingIncludeFiles.get(file.getPath());
   }
 
+  private boolean isCFile(String filePath) {
+    for (String pattern : cFilesPatterns) {
+      if (wildcardMatchOnSystem(filePath, pattern)) {
+        return true;
+      }
+    }
+    return false;
+  }
+
   @Override
   public PreprocessorAction process(List<Token> tokens) {
     Token token = tokens.get(0);
@@ -242,7 +254,7 @@ public class CxxPreprocessor extends Preprocessor {
     File file = getFileUnderAnalysis();
     String filePath = file == null ? token.getURI().toString() : file.getAbsolutePath();
 
-    if (filePath.endsWith(".c") || filePath.endsWith(".C")) {
+    if (isCFile(filePath)) {
       //Create macros to replace C++ keywords when parsing C files
       registerMacros(StandardDefinitions.compatibilityMacros());
       macros.disable("__cplusplus");

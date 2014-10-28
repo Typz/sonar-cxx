@@ -241,11 +241,15 @@ public class CxxPreprocessor extends Preprocessor {
   private boolean isCFile(String filePath) {
     for (String pattern : cFilesPatterns) {
       if (wildcardMatchOnSystem(filePath, pattern)) {
+        LOG.trace("Parse '{}' as C file, matches '{}' pattern", filePath, pattern);
         return true;
       }
     }
+    LOG.trace("Parse '{}' as C++ file", filePath);
     return false;
   }
+
+  private File currentContextFile = null;
 
   @Override
   public PreprocessorAction process(List<Token> tokens) {
@@ -254,12 +258,15 @@ public class CxxPreprocessor extends Preprocessor {
     File file = getFileUnderAnalysis();
     String filePath = file == null ? token.getURI().toString() : file.getAbsolutePath();
 
-    if (isCFile(filePath)) {
-      //Create macros to replace C++ keywords when parsing C files
-      registerMacros(StandardDefinitions.compatibilityMacros());
-      macros.disable("__cplusplus");
-    } else {
-      macros.enable("__cplusplus");
+    if (context.getFile() != currentContextFile) {
+      currentContextFile = context.getFile();
+      if (isCFile(currentContextFile.getAbsolutePath())) {
+        //Create macros to replace C++ keywords when parsing C files
+        registerMacros(StandardDefinitions.compatibilityMacros());
+        macros.disable("__cplusplus");
+      } else {
+        macros.enable("__cplusplus");
+      }
     }
 
     if (ttype == PREPROCESSOR) {
@@ -328,6 +335,7 @@ public class CxxPreprocessor extends Preprocessor {
     analysedFiles.clear();
     macros.clearLowPrio();
     state.reset();
+    currentContextFile = null;
   }
 
   public String valueOf(String macroname) {
